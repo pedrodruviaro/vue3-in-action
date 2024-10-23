@@ -1,7 +1,10 @@
 import { ref, watch } from 'vue'
-type Visibility = 'public' | 'private'
 
-type SettingsKey = keyof SettingsMap
+// union type alias
+type Visibility = 'public' | 'private' 
+
+// another union type alias -> extract the KEYS of SettingsMap -> same as "general" | "privacy" | "notifications"
+type SettingsKey = keyof SettingsMap 
 
 interface GeneralSettings {
   about: string
@@ -21,12 +24,17 @@ interface PrivacySettings {
   searchEngineIndexing: boolean
 }
 
+// maps the keys to their corresponding interfaces (map off settings)
 interface SettingsMap {
   general: GeneralSettings
   privacy: PrivacySettings
   notifications: NotificationsSettings
 }
 
+/*
+T -> generic parameter. Accepts any type T as long as T is a subtype of SettingsKey ('general', 'privacy' or 'notifications')
+defaults: SettingsMap[T] -> ensure that 'defaults' must match the structure defined in SettingsMap for the given key 
+*/
 function init<T extends SettingsKey>(key: T, defaults: SettingsMap[T]) {
   const stored = localStorage.getItem(key)
 
@@ -42,6 +50,7 @@ const general = ref<GeneralSettings>(
     username: ''
   })
 )
+
 
 const notifications = ref<NotificationsSettings>(
   init('notifications', {
